@@ -6,6 +6,8 @@ import {
 import { parseCookies, destroyCookie } from "nookies";
 import { AuthTokenError } from "../services/errors/AuthTokenError";
 
+// Validação no lado do servidor para proteger rotas
+// Somente usuários logados terão acesso a essas rotas
 export function canSSRAuth<P>(fn: GetServerSideProps<P>) {
   return async (
     ctx: GetServerSidePropsContext

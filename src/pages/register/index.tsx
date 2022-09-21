@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Flex, Text, Center, Input, Button } from "@chakra-ui/react";
 import logoImg from "../../../public/images/logo.svg";
-import { AuthContext, signOut } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
+import { canSSRGuest } from "../../utils/canSSRGuest";
 
 export default function Register() {
   const { signUp } = useContext(AuthContext);
@@ -101,3 +102,10 @@ export default function Register() {
     </>
   );
 }
+
+// ROTA PROTEGIDA COM A VALIDAÇÃO FEITA NO canSSRGuest
+export const getServerSideProps = canSSRGuest(async (ctx) => {
+  return {
+    props: {},
+  };
+});
