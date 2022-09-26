@@ -33,6 +33,10 @@ interface NavItemProps extends FlexProps {
   route: string;
 }
 
+interface MobileProps extends FlexProps {
+  onOpen: () => void;
+}
+
 const LinkItems: Array<LinkItemProps> = [
   { name: "Agenda", icon: FiScissors, route: "/dashboard" },
   { name: "Cortes", icon: FiClipboard, route: "/haircuts" },
@@ -80,7 +84,23 @@ export function Sidebar({ children }: { children: ReactNode }) {
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
       />
-      <Box>{children}</Box>
+      <Drawer
+        autoFocus={false}
+        isOpen={isOpen}
+        placement="left"
+        returnFocusOnClose={false}
+        onOverlayClick={onClose}
+        size="full"
+        onClose={onClose}
+      >
+        <DrawerContent>
+          <SideBarContent onClose={() => onClose()} />
+        </DrawerContent>
+      </Drawer>
+      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+      <Box ml={{ base: 0, md: 60 }} p={4}>
+        {children}
+      </Box>
     </Box>
   );
 }
@@ -96,7 +116,7 @@ const SideBarContent = ({ onClose, ...rest }) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" justifyContent="center" mx="8">
+      <Flex h="20" alignItems="center" justifyContent="space-between" mx="8">
         <Link href="/dashboard">
           <Flex cursor="pointer" userSelect="none" flexDirection="row">
             <Text
@@ -117,7 +137,11 @@ const SideBarContent = ({ onClose, ...rest }) => {
             </Text>
           </Flex>
         </Link>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <CloseButton
+          color="white"
+          display={{ base: "flex", md: "none" }}
+          onClick={onClose}
+        />
       </Flex>
 
       {LinkItems.map((link) => (
@@ -131,5 +155,47 @@ const SideBarContent = ({ onClose, ...rest }) => {
         </NavItem>
       ))}
     </Box>
+  );
+};
+
+const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  return (
+    <Flex
+      ml={{ base: 0, md: 60 }}
+      px={{ base: 4, md: 24 }}
+      height="20"
+      alignItems="center"
+      bg={useColorModeValue("gray.600", "gray.900")}
+      borderBottomWidth="1px"
+      borderBottomColor={useColorModeValue("gray.700", "gray.700")}
+      justifyContent="flex-start"
+      {...rest}
+    >
+      <IconButton
+        variant="outline"
+        onClick={onOpen}
+        aria-label="open menu"
+        icon={<FiMenu />}
+      />
+      <Flex flexDirection="row">
+        <Text
+          ml={8}
+          fontSize="2xl"
+          color="button.gray"
+          fontFamily="monospace"
+          fontWeight="bold"
+        >
+          Barber
+        </Text>
+        <Text
+          color="button.cta"
+          fontSize="2xl"
+          fontFamily="monospace"
+          fontWeight="bold"
+        >
+          PRO
+        </Text>
+      </Flex>
+    </Flex>
   );
 };
