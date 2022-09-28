@@ -21,8 +21,10 @@ interface ProfileProps {
 
 export default function Profile({ user, premium }: ProfileProps) {
   const { logOutUser } = useContext(AuthContext);
-  const [name, setName] = useState("");
-  const [endereco, setEndereco] = useState("");
+  const [name, setName] = useState(user && user?.name);
+  const [endereco, setEndereco] = useState(
+    user?.endereco ? user?.endereco : ""
+  );
 
   async function handleLogout() {
     await logOutUser();
@@ -73,6 +75,7 @@ export default function Profile({ user, premium }: ProfileProps) {
                 mb={3}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                color="white"
               />
 
               <Text mb={2} fontSize="xl" fontWeight="bold" color="white">
@@ -87,6 +90,7 @@ export default function Profile({ user, premium }: ProfileProps) {
                 mb={3}
                 value={endereco}
                 onChange={(e) => setEndereco(e.target.value)}
+                color="white"
               />
 
               <Text mb={2} fontSize="xl" fontWeight="bold" color="white">
