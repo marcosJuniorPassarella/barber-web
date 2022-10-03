@@ -12,6 +12,8 @@ import { FiChevronLeft } from "react-icons/fi";
 import { Sidebar } from "../../../components/sidebar";
 import { canSSRAuth } from "../../../utils/canSSRAuth";
 import { setupAPIClient } from "../../../services/api";
+import { useState } from "react";
+import Router from "next/router";
 
 interface NewHaircutPropsSubscription {
   subscription: boolean;
@@ -23,6 +25,26 @@ export default function NewHaircut({
   count,
 }: NewHaircutPropsSubscription) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+
+  async function handleRegister() {
+    if (name === "" || price === "") {
+      return;
+    }
+
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.post("/haircut", {
+        name: name,
+        price: Number(price),
+      });
+      Router.push("/haircuts");
+    } catch (error) {
+      console.log(error);
+      alert("Erro ao cadastrar esse modelo.");
+    }
+  }
 
   return (
     <>
@@ -90,6 +112,8 @@ export default function NewHaircut({
               mb={3}
               color="white"
               disabled={!subscription && count >= 3}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
             <Input
               placeholder="Valor do corte ex: 59.90"
@@ -100,6 +124,8 @@ export default function NewHaircut({
               mb={4}
               color="white"
               disabled={!subscription && count >= 3}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
             />
 
             <Button
@@ -109,6 +135,7 @@ export default function NewHaircut({
               _hover={{ bg: "#FFb13e" }}
               color="gray.900"
               mb={6}
+              onClick={handleRegister}
               disabled={!subscription && count >= 3}
             >
               Cadastrar
