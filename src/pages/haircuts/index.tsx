@@ -13,6 +13,7 @@ import { IoMdPricetag } from "react-icons/io";
 import { Sidebar } from "../../components/sidebar";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { setupAPIClient } from "../../services/api";
+import { useState } from "react";
 
 interface HaircutsItem {
   id: string;
@@ -28,6 +29,9 @@ interface HaircutsProps {
 
 export default function Haircuts({ haircuts }: HaircutsProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [haircutList, setHaircutList] = useState<HaircutsItem[]>(
+    haircuts || []
+  );
 
   return (
     <>
@@ -71,34 +75,36 @@ export default function Haircuts({ haircuts }: HaircutsProps) {
             </Stack>
           </Flex>
 
-          <Link href="/haircuts/123">
-            <Flex
-              cursor="pointer"
-              w="100%"
-              p={4}
-              bg="barber.400"
-              direction={isMobile ? "column" : "row"}
-              align={isMobile ? "flex-start" : "center"}
-              rounded="4"
-              mb={2}
-              justifyContent="space-between"
-            >
+          {haircutList.map((haircut) => (
+            <Link key={haircut?.id} href={`/haircuts/${haircut?.id}`}>
               <Flex
-                mb={isMobile ? 2 : 0}
-                direction="row"
-                alignItems="center"
-                justifyContent="center"
+                cursor="pointer"
+                w="100%"
+                p={4}
+                bg="barber.400"
+                direction={isMobile ? "column" : "row"}
+                align={isMobile ? "flex-start" : "center"}
+                rounded="4"
+                mb={2}
+                justifyContent="space-between"
               >
-                <IoMdPricetag size={28} color="#fba931" />
-                <Text ml={4} noOfLines={2} fontWeight="bold" color="white">
-                  Corte completo
+                <Flex
+                  mb={isMobile ? 2 : 0}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <IoMdPricetag size={28} color="#fba931" />
+                  <Text ml={4} noOfLines={2} fontWeight="bold" color="white">
+                    {haircut?.name}
+                  </Text>
+                </Flex>
+                <Text fontWeight="bold" color="white">
+                  Preço R$ {haircut?.price}
                 </Text>
               </Flex>
-              <Text fontWeight="bold" color="white">
-                Preço R$ 59,90
-              </Text>
-            </Flex>
-          </Link>
+            </Link>
+          ))}
         </Flex>
       </Sidebar>
     </>
