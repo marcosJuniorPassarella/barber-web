@@ -8,10 +8,20 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import Link from "next/link";
-import { Sidebar } from "../../../components/sidebar";
 import { FiChevronLeft } from "react-icons/fi";
+import { Sidebar } from "../../../components/sidebar";
+import { canSSRAuth } from "../../../utils/canSSRAuth";
+import { setupAPIClient } from "../../../services/api";
 
-export default function NewHaircut() {
+interface NewHaircutPropsSubscription {
+  subscription: boolean;
+  count: number;
+}
+
+export default function NewHaircut({
+  subscription,
+  count,
+}: NewHaircutPropsSubscription) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
 
   return (
@@ -78,6 +88,8 @@ export default function NewHaircut() {
               w="85%"
               bg="gray.900"
               mb={3}
+              color="white"
+              disabled={!subscription && count >= 3}
             />
             <Input
               placeholder="Valor do corte ex: 59.90"
@@ -86,6 +98,8 @@ export default function NewHaircut() {
               w="85%"
               bg="gray.900"
               mb={4}
+              color="white"
+              disabled={!subscription && count >= 3}
             />
 
             <Button
@@ -95,12 +109,55 @@ export default function NewHaircut() {
               _hover={{ bg: "#FFb13e" }}
               color="gray.900"
               mb={6}
+              disabled={!subscription && count >= 3}
             >
               Cadastrar
             </Button>
+
+            {!subscription && count >= 3 && (
+              <Flex direction="row" align="center" justifyContent="center">
+                <Text color="white">Você atingiu seu limite de cortes. </Text>
+                <Link href="/plans">
+                  <Text
+                    ml={1}
+                    fontWeight="bold"
+                    color="#31fb6a"
+                    cursor="pointer"
+                  >
+                    Seja premium
+                  </Text>
+                </Link>
+              </Flex>
+            )}
           </Flex>
         </Flex>
       </Sidebar>
     </>
   );
 }
+
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  try {
+    const apiClient = setupAPIClient(ctx);
+
+    const response = await apiClient.get("/haircut/check");
+    const count = await apiClient.get("/haircut/count");
+
+    return {
+      props: {
+        subscriptions:
+          response.data?.subscriptions?.status === "active" ? true : false,
+        count: count.data,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+
+    return {
+      redirect: {
+        destination: "/dashboard",
+        permanent: false,
+      },
+    };
+  }
+});
