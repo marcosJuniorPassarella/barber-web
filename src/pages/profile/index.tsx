@@ -30,6 +30,22 @@ export default function Profile({ user, premium }: ProfileProps) {
     await logOutUser();
   }
 
+  async function handleUpdateUser() {
+    if (name === "") {
+      return;
+    }
+
+    try {
+      const apiClient = setupAPIClient();
+      apiClient.put("/users", {
+        name: name,
+        endereco: endereco,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -136,6 +152,7 @@ export default function Profile({ user, premium }: ProfileProps) {
                 bg="button.cta"
                 size="lg"
                 _hover={{ bg: "#ffb13e" }}
+                onClick={handleUpdateUser}
               >
                 Salvar
               </Button>
