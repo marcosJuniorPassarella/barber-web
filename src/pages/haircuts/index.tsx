@@ -1,9 +1,19 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Flex, Heading, Button, Stack, Switch, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Button,
+  Stack,
+  Switch,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { Sidebar } from "../../components/sidebar";
 
 export default function Haircuts() {
+  const [isMobile] = useMediaQuery("(max-width: 500px)");
+
   return (
     <>
       <Head>
@@ -16,13 +26,19 @@ export default function Haircuts() {
           justifyContent="flex-start"
         >
           <Flex
-            direction="row"
+            direction={isMobile ? "column" : "row"}
             w="100%"
-            alignItems="center"
+            alignItems={isMobile ? "flex-start" : "center"}
             justifyContent="center"
             mb={0}
           >
-            <Heading fontSize="3xl" mt={4} mb={4} mr={4} color="orange.900">
+            <Heading
+              fontSize={isMobile ? "28px" : "3xl"}
+              mt={4}
+              mb={4}
+              mr={4}
+              color="orange.900"
+            >
               Modelos de corte
             </Heading>
 
