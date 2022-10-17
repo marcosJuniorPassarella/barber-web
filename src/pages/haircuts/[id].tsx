@@ -13,8 +13,31 @@ import {
 import { Sidebar } from "../../components/sidebar";
 import { FiChevronLeft } from "react-icons/fi";
 import Link from "next/link";
+import { canSSRAuth } from "../../utils/canSSRAuth";
+import { setupAPIClient } from "../../services/api";
 
-export default function EditHaircut() {
+interface HaircutProps {
+  id: string;
+  name: string;
+  price: string | number;
+  status: boolean;
+  user_id: string;
+}
+
+interface SubscriptionProps {
+  id: string;
+  status: string;
+}
+
+interface EditHaircutsProps {
+  haircut: HaircutProps;
+  subscription: SubscriptionProps | null;
+}
+
+export default function EditHaircut({
+  subscription,
+  haircut,
+}: EditHaircutsProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
 
   return (
@@ -102,9 +125,26 @@ export default function EditHaircut() {
                 bg="button.cta"
                 color="gray.900"
                 _hover={{ bg: "#FFB13e" }}
+                disabled={subscription?.status !== "active"}
               >
                 Salvar
               </Button>
+
+              {subscription?.status !== "active" && (
+                <Flex direction="row" align="center" justify="center">
+                  <Link href="/planos">
+                    <Text
+                      cursor="pointer"
+                      fontWeight="bold"
+                      mr={1}
+                      color="whatsapp.300"
+                    >
+                      Seja Premium
+                    </Text>
+                  </Link>
+                  <Text color='white'>e tenha todos acessos liberados!</Text>
+                </Flex>
+              )}
             </Flex>
           </Flex>
         </Flex>
@@ -112,3 +152,32 @@ export default function EditHaircut() {
     </>
   );
 }
+
+export const getServerSideProps = canSSRAuth(async (ctx) => {
+  const { id } = ctx.params;
+
+  try {
+    const apiClient = setupAPIClient(ctx);
+    const check = await apiClient.get("/haircut/check");
+    const response = await apiClient.get("/haircut/detail", {
+      params: {
+        haircut_id: id,
+      },
+    });
+
+    return {
+      props: {
+        haircut: response.data,
+        subscription: check.data?.subscriptions,
+      },
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      redirect: {
+        destination: "/haircuts",
+        permanent: false,
+      },
+    };
+  }
+});
