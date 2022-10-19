@@ -57,6 +57,24 @@ export default function EditHaircut({
     }
   }
 
+  async function handleSaveUpdate() {
+    if (name === "" || price === "") {
+      return;
+    }
+
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.put("/haircut", {
+        name: name,
+        price: Number(price),
+        status: status,
+        haircut_id: haircut?.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -157,6 +175,7 @@ export default function EditHaircut({
                 color="gray.900"
                 _hover={{ bg: "#FFB13e" }}
                 disabled={subscription?.status !== "active"}
+                onClick={handleSaveUpdate}
               >
                 Salvar
               </Button>
