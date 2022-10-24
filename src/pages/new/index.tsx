@@ -29,6 +29,11 @@ export default function New({ haircuts }: NewProps) {
   }
 
   async function handleRegister() {
+    if (customer === "") {
+      alert("Preencha o nome do cliente.");
+      return;
+    }
+
     try {
       const apiClient = setupAPIClient();
       apiClient.post("/schedule", {
@@ -73,7 +78,7 @@ export default function New({ haircuts }: NewProps) {
               size="lg"
               type="text"
               bg="barber.900"
-              color='white'
+              color="white"
               value={customer}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setCustomer(e.target.value)
@@ -102,6 +107,7 @@ export default function New({ haircuts }: NewProps) {
               bg="button.cta"
               _hover={{ bg: "#FFb13e" }}
               onClick={handleRegister}
+              disabled={!customer}
             >
               Cadastrar
             </Button>
