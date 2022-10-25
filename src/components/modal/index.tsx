@@ -8,6 +8,7 @@ import {
   ModalCloseButton,
   Flex,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import { FiUser, FiScissors } from "react-icons/fi";
 import { FaMoneyBillAlt } from "react-icons/fa";
@@ -33,11 +34,38 @@ export function ModalInfo({
       <ModalOverlay />
       <ModalContent bg="barber.400">
         <ModalHeader color="white">Próximo</ModalHeader>
-        <ModalCloseButton color='white' />
+        <ModalCloseButton color="white" />
         <ModalBody>
           <Flex align="center" mb={3}>
-            <Text color='white'>Teste Modal</Text>
+            <FiUser size={28} color="#FFB13e" />
+            <Text ml={3} fontSize="2xl" fontWeight="bold" color="white">
+              Marcos Júnior
+            </Text>
           </Flex>
+          <Flex align="center" mb={3}>
+            <FiScissors size={28} color="#FFF" />
+            <Text ml={3} fontSize="large" fontWeight="bold" color="white">
+              Corte Completo
+            </Text>
+          </Flex>
+          <Flex align="center" mb={3}>
+            <FaMoneyBillAlt size={28} color="#46ef75" />
+            <Text ml={3} fontSize="large" fontWeight="bold" color="white">
+              R$ 59.90
+            </Text>
+          </Flex>
+
+          <ModalFooter>
+            <Button
+              bg="button.cta"
+              _hover={{ bg: "#FFb13e" }}
+              color="#fff"
+              mr={3}
+              onClick={() => finishService()}
+            >
+              Finalizar serviço
+            </Button>
+          </ModalFooter>
         </ModalBody>
       </ModalContent>
     </Modal>
