@@ -182,7 +182,7 @@ export default function EditHaircut({
 
               {subscription?.status !== "active" && (
                 <Flex direction="row" align="center" justify="center">
-                  <Link href="/planos">
+                  <Link href="/plans">
                     <Text
                       cursor="pointer"
                       fontWeight="bold"

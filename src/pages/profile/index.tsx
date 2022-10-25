@@ -131,7 +131,7 @@ export default function Profile({ user, premium }: ProfileProps) {
                 >
                   Plano {premium ? "Premium" : "Grátis"}
                 </Text>
-                <Link href="/planos">
+                <Link href="/plans">
                   <Box
                     cursor="pointer"
                     p={1}
