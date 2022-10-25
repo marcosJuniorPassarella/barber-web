@@ -39,19 +39,19 @@ export function ModalInfo({
           <Flex align="center" mb={3}>
             <FiUser size={28} color="#FFB13e" />
             <Text ml={3} fontSize="2xl" fontWeight="bold" color="white">
-              Marcos Júnior
+              {data?.customer}
             </Text>
           </Flex>
           <Flex align="center" mb={3}>
             <FiScissors size={28} color="#FFF" />
             <Text ml={3} fontSize="large" fontWeight="bold" color="white">
-              Corte Completo
+              {data?.haircut?.name}
             </Text>
           </Flex>
           <Flex align="center" mb={3}>
             <FaMoneyBillAlt size={28} color="#46ef75" />
             <Text ml={3} fontSize="large" fontWeight="bold" color="white">
-              R$ 59.90
+              R$ {data?.haircut?.price}
             </Text>
           </Flex>
 
