@@ -1,3 +1,4 @@
+import { useState, ChangeEvent } from "react";
 import Head from "next/head";
 import {
   Flex,
@@ -9,7 +10,6 @@ import {
   Stack,
   Switch,
 } from "@chakra-ui/react";
-
 import { Sidebar } from "../../components/sidebar";
 import { FiChevronLeft } from "react-icons/fi";
 import Link from "next/link";
@@ -39,6 +39,41 @@ export default function EditHaircut({
   haircut,
 }: EditHaircutsProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+  const [name, setName] = useState(haircut?.name);
+  const [price, setPrice] = useState(haircut?.price);
+  const [status, setStatus] = useState(haircut?.status);
+
+  const [disableHaircut, setDisableHaircut] = useState(
+    haircut?.status ? "disabled" : "enabled"
+  );
+
+  function handleChangeStatus(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.value === "disabled") {
+      setDisableHaircut("enabled");
+      setStatus(false);
+    } else {
+      setDisableHaircut("disabled");
+      setStatus(true);
+    }
+  }
+
+  async function handleSaveUpdate() {
+    if (name === "" || price === "") {
+      return;
+    }
+
+    try {
+      const apiClient = setupAPIClient();
+      await apiClient.put("/haircut", {
+        name: name,
+        price: Number(price),
+        status: status,
+        haircut_id: haircut?.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
@@ -101,6 +136,9 @@ export default function EditHaircut({
                 size="lg"
                 type="text"
                 w="100%"
+                color="white"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
 
               <Input
@@ -110,13 +148,24 @@ export default function EditHaircut({
                 size="lg"
                 type="number"
                 w="100%"
+                color="white"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
               />
 
               <Stack mb={6} align="center" direction="row">
                 <Text color="white" fontWeight="bold" mr={1}>
                   Desativar corte
                 </Text>
-                <Switch size="lg" colorScheme="red" />
+                <Switch
+                  size="lg"
+                  colorScheme="red"
+                  value={disableHaircut}
+                  isChecked={disableHaircut === "disabled" ? false : true}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    handleChangeStatus(e)
+                  }
+                />
               </Stack>
 
               <Button
@@ -126,13 +175,14 @@ export default function EditHaircut({
                 color="gray.900"
                 _hover={{ bg: "#FFB13e" }}
                 disabled={subscription?.status !== "active"}
+                onClick={handleSaveUpdate}
               >
                 Salvar
               </Button>
 
               {subscription?.status !== "active" && (
                 <Flex direction="row" align="center" justify="center">
-                  <Link href="/planos">
+                  <Link href="/plans">
                     <Text
                       cursor="pointer"
                       fontWeight="bold"
@@ -142,7 +192,7 @@ export default function EditHaircut({
                       Seja Premium
                     </Text>
                   </Link>
-                  <Text color='white'>e tenha todos acessos liberados!</Text>
+                  <Text color="white">e tenha todos acessos liberados!</Text>
                 </Flex>
               )}
             </Flex>
