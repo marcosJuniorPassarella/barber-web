@@ -41,7 +41,9 @@ export default function New({ haircuts }: NewProps) {
         haircut_id: haircutSelected?.id,
       });
 
-      router.push("/dashboard");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     } catch (error) {
       console.log(error);
     }
@@ -94,7 +96,7 @@ export default function New({ haircuts }: NewProps) {
               onChange={(e) => handleChancheSelect(e.target.value)}
             >
               {haircuts?.map((item) => (
-                <option key={item?.id} value={item?.id}>
+                <option style={{ backgroundColor: '#fff', color: "#000" }} key={item?.id} value={item?.id}>
                   {item?.name}
                 </option>
               ))}
