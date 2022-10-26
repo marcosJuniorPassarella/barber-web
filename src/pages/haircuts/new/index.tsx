@@ -65,7 +65,8 @@ export default function NewHaircut({
           >
             <Link href="/haircuts">
               <Button
-                bg="barber.400"
+                background="barber.400"
+                _hover={{ background: "gray.700" }}
                 color="white"
                 display="flex"
                 alignItems="center"
