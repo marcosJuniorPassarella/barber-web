@@ -3,6 +3,7 @@ import { Button, Flex, Heading, Text, useMediaQuery } from "@chakra-ui/react";
 import { Sidebar } from "../../components/sidebar";
 import { canSSRAuth } from "../../utils/canSSRAuth";
 import { setupAPIClient } from "../../services/api";
+import { getStripeJs } from "../../services/stripe-js";
 
 interface PlansProps {
   premium: boolean;
@@ -10,6 +11,22 @@ interface PlansProps {
 
 export default function Plans({ premium }: PlansProps) {
   const [isMobile] = useMediaQuery("(max-width: 500px)");
+
+  const handleSubscribe = async () => {
+    if (premium) {
+      return;
+    }
+
+    try {
+      const apiClient = setupAPIClient();
+      const response = await apiClient.post("/subscribe");
+      const { sessionId } = response.data;
+      const stripe = await getStripeJs();
+      await stripe.redirectToCheckout({ sessionId: sessionId });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -104,7 +121,7 @@ export default function Plans({ premium }: PlansProps) {
                 m={2}
                 color="white"
                 _hover={{ bg: "#FFb13e" }}
-                onClick={() => {}}
+                onClick={handleSubscribe}
               >
                 {premium ? "Você já é Premium" : "Se tornar Premium"}
               </Button>
